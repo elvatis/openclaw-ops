@@ -162,13 +162,9 @@ export default function register(api: any) {
 
       const lines = out.split("\n");
 
-      // Extract key header lines
+      // Extract key header lines (keep it minimal, no full model dump)
       const pick = (prefix: string) => lines.find((l) => l.startsWith(prefix)) ?? "";
-      const header = [
-        pick("Default"),
-        pick("Fallbacks"),
-        pick("Configured models"),
-      ].filter(Boolean);
+      const header = [pick("Default"), pick("Fallbacks")].filter(Boolean);
 
       // Extract OAuth/token expiry section
       const startIdx = lines.findIndex((l) => l.trim() === "OAuth/token status");
@@ -185,15 +181,18 @@ export default function register(api: any) {
       }
 
       const msg: string[] = [];
-      msg.push("Limits (best-effort)");
+      msg.push("Limits");
       msg.push("");
+
       if (header.length) {
+        msg.push("Config:");
         msg.push("```text");
         for (const h of header) msg.push(h);
         msg.push("```");
         msg.push("");
       }
 
+      // 1) Auth expiry windows are hard limits (when OAuth expires)
       if (expiry.length) {
         msg.push("Auth expiry windows:");
         msg.push("```text");
@@ -201,43 +200,54 @@ export default function register(api: any) {
         if (expiry.length > 80) msg.push("... (truncated)");
         msg.push("```");
       } else {
-        msg.push("No OAuth/token status section found in output.");
+        msg.push("Auth expiry windows: (not found in CLI output)");
       }
 
-      // Also show rate-limit cooldown windows from model-failover state file (if present)
+      // 2) Rate-limit cooldown windows from model-failover state file (observed, best-effort)
       try {
         const statePath = path.join(workspace, "memory", "model-ratelimits.json");
-        if (fs.existsSync(statePath)) {
-          const raw = fs.readFileSync(statePath, "utf-8");
-          const st = JSON.parse(raw) as any;
-          const lim = (st?.limited ?? {}) as Record<string, { lastHitAt: number; nextAvailableAt: number; reason?: string }>;
-          const now = Math.floor(Date.now() / 1000);
+        const now = Math.floor(Date.now() / 1000);
 
-          const active = Object.entries(lim)
-            .map(([model, v]) => ({ model, ...v }))
-            .filter((v) => typeof v.nextAvailableAt === "number" && v.nextAvailableAt > now)
-            .sort((a, b) => a.nextAvailableAt - b.nextAvailableAt)
-            .slice(0, 30);
+        msg.push("");
 
-          if (active.length) {
-            msg.push("");
-            msg.push("Rate-limit cooldowns (model-failover):");
-            msg.push("```text");
-            for (const a of active) {
-              const etaSec = a.nextAvailableAt - now;
-              const etaMin = Math.max(0, Math.round(etaSec / 60));
-              const untilIso = new Date(a.nextAvailableAt * 1000).toISOString();
-              msg.push(`${a.model}  until ${untilIso}  (~${etaMin}m)`);
-            }
-            msg.push("```");
+        if (!fs.existsSync(statePath)) {
+          msg.push("Rate-limit cooldowns: none recorded yet.");
+          msg.push("(They appear after the first detected 429/quota event, via the model-failover plugin.)");
+          msg.push("");
+          msg.push("Note: True provider quota counters and official reset timestamps are not exposed by `openclaw models status` today. This command reports OAuth expiry and observed cooldown windows.");
+          return { text: msg.join("\n") };
+        }
+
+        const raw = fs.readFileSync(statePath, "utf-8");
+        const st = JSON.parse(raw) as any;
+        const lim = (st?.limited ?? {}) as Record<string, { lastHitAt: number; nextAvailableAt: number; reason?: string }>;
+
+        const active = Object.entries(lim)
+          .map(([model, v]) => ({ model, ...v }))
+          .filter((v) => typeof v.nextAvailableAt === "number" && v.nextAvailableAt > now)
+          .sort((a, b) => a.nextAvailableAt - b.nextAvailableAt)
+          .slice(0, 30);
+
+        if (!active.length) {
+          msg.push("Rate-limit cooldowns: none active.");
+        } else {
+          msg.push("Rate-limit cooldowns (observed):");
+          msg.push("```text");
+          for (const a of active) {
+            const etaSec = a.nextAvailableAt - now;
+            const etaMin = Math.max(0, Math.round(etaSec / 60));
+            const untilIso = new Date(a.nextAvailableAt * 1000).toISOString();
+            msg.push(`${a.model}  until ${untilIso}  (~${etaMin}m)`);
           }
+          msg.push("```");
         }
       } catch {
-        // ignore
+        msg.push("");
+        msg.push("Rate-limit cooldowns: failed to read local state.");
       }
 
       msg.push("");
-      msg.push("Note: OpenClaw CLI does not currently show per-model rate-limit reset times. The cooldown section above is computed from the local model-failover state.");
+      msg.push("Note: True provider quota counters and official reset timestamps are not exposed by `openclaw models status` today. This command reports OAuth expiry and observed cooldown windows.");
 
       return { text: msg.join("\n") };
     },
