@@ -1,0 +1,15 @@
+{
+  "id": "openclaw-ops",
+  "name": "OpenClaw Ops",
+  "version": "0.1.0",
+  "description": "Operational commands: /cron dashboard and /privacy-scan runner.",
+  "configSchema": {
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+      "enabled": { "type": "boolean", "default": true },
+      "workspacePath": { "type": "string", "default": "~/.openclaw/workspace" }
+    }
+  }
+}
