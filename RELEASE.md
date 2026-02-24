@@ -20,6 +20,17 @@
 
 (If you prefer a different staging setup: separate VM/container, different workspace, etc., write it here.)
 
+## Staging smoke tests (mandatory)
+
+For **every** `openclaw-*` repo before rollout:
+
+- Install into staging profile: `openclaw --profile staging plugins install -l ~/.openclaw/workspace/<repo>`
+- Restart staging gateway: `openclaw --profile staging gateway restart`
+- Health check: `openclaw --profile staging status`
+- Run one smoke command/tool call if the plugin exposes one
+
+Document results (and any failures) before asking for GO.
+
 ## “Go” checklist (what the human approves)
 
 Before publishing to ClawHub, the human checks:

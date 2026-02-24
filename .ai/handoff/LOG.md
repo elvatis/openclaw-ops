@@ -10,3 +10,4 @@
 - 2026-02-25: Updated Elvatis blog post “How I Run an Autonomous AI Assistant Without Losing Control” live via Ghost Admin API: added `openclaw-ops` to plugin stack, tightened wording around self-healing scope, updated rollout discipline section to include staging + human GO, and extended the conclusion with QA gate step.
 - 2026-02-25: Overnight QA run (local, no install): ran `npm run build --if-present` + `npm test --if-present` across 14 `openclaw-*` repos. All passed except `openclaw-memory-core` test failure in `tests/store.test.ts` (expects 'Dubai' in top search hit).
 - 2026-02-25: Created/initialized OpenClaw **staging** profile locally on the same machine (state dir `~/.openclaw-staging/`). Updated `RELEASE.md` to document staging gateway + GO flow.
+- 2026-02-25: Policy update: staging smoke tests must be run for **all** `openclaw-*` repos before rollout/publish; documented in `RELEASE.md`.
