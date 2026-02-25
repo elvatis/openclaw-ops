@@ -216,7 +216,21 @@ export default function register(api: any) {
         const repoPath = path.join(workspace, repo);
         const rel = `~/.openclaw/workspace/${repo}`;
 
+        // Restrict plugin autoload during smoke tests to reduce cross-plugin interference.
+        // This is a safety measure for staging runs only.
+        const pluginId = repo;
         log.push(`== ${repo} ==`);
+        const allow = runCmd(
+          "openclaw",
+          ["--profile", "staging", "config", "set", "plugins.allow", JSON.stringify([pluginId])],
+          60_000
+        );
+        log.push(`allowlist: exit ${allow.code}`);
+        if (allow.out) log.push(allow.out);
+        if (allow.code !== 0) {
+          fs.writeFileSync(reportPath, log.join("\n") + "\n", "utf-8");
+          return { text: `Staging smoke FAILED on ${repo} (set plugins.allow). Report: ${reportPath}` };
+        }
 
         const step1 = runCmd("openclaw", ["--profile", "staging", "plugins", "install", "-l", repoPath], 300_000);
         log.push(`install: exit ${step1.code}`);

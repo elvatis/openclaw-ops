@@ -20,3 +20,5 @@
   - openclaw-homeassistant (9fad756)
   - openclaw-ispconfig (11bcfe0)
   - openclaw-memory-core (cae15ef)
+- 2026-02-25: Adjusted openclaw-gpu-bridge config schema to allow empty config at install time (removed `anyOf` requirement). Commit: 440ea4c.
+- 2026-02-25: Hardened `/staging-smoke` to set `plugins.allow` per-plugin in the staging profile before install (reduces cross-plugin autoload interference).
