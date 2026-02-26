@@ -1,9 +1,6 @@
 name: openclaw-triage-labels
 
 on:
-  schedule:
-    # every 6 hours at minute 10
-    - cron: "10 */6 * * *"
   workflow_dispatch:
 
 permissions:
@@ -12,6 +9,7 @@ permissions:
 
 jobs:
   triage:
+    if: ${{ false }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
     env:
