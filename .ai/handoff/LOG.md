@@ -6,6 +6,36 @@
 
 ---
 
+## 2026-02-27 v0.2 Roadmap Definition
+
+**Agent:** claude-opus-4.6
+**Phase:** planning
+**Commit:** pending
+
+### What was done
+
+- Analyzed full codebase (index.ts, extensions/phase1-commands.ts, all handoff files) to identify gaps and improvements
+- Created GitHub labels: high-priority, medium-priority, low-priority
+- Created 5 GitHub issues defining the v0.2 roadmap:
+  - [#1](https://github.com/homeofe/openclaw-ops/issues/1) - Extract shared utilities into a common module (HIGH)
+  - [#2](https://github.com/homeofe/openclaw-ops/issues/2) - Add test infrastructure and basic command tests (HIGH)
+  - [#3](https://github.com/homeofe/openclaw-ops/issues/3) - Implement Phase 2 /config command (MEDIUM)
+  - [#4](https://github.com/homeofe/openclaw-ops/issues/4) - Fix Windows disk usage detection in /health (MEDIUM)
+  - [#5](https://github.com/homeofe/openclaw-ops/issues/5) - Fix triage CI workflow cross-repo 403 errors (LOW)
+- Updated DASHBOARD.md with v0.2 roadmap issue table and T-004 through T-007 task IDs
+- Updated STATUS.md with roadmap section and current state
+- Updated NEXT_ACTIONS.md with prioritized work items linked to GitHub issues
+- Updated MANIFEST.json with new task entries
+
+### Key decisions
+
+- Prioritized code quality (refactor + tests) over new features - #1 and #2 are prerequisites for safe iteration
+- Recommended execution order: #1 -> #2 -> #4 -> #3 -> #5
+- Identified that `runCmd` timeout differs between files (120s vs 30s) - needs unification in #1
+- Identified deprecated `wmic` usage on Windows as a real bug affecting current development machine
+
+---
+
 ## 2026-02-26 AAHP v3 Migration
 
 **Agent:** claude-sonnet-4.6

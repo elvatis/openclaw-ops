@@ -1,68 +1,92 @@
 # openclaw-ops: Next Actions for Incoming Agent
 
 > Priority order. Work top-down.
-> Updated: 2026-02-26 (AAHP v3 migration)
+> Updated: 2026-02-27 (v0.2 roadmap definition)
 
 ---
 
-## T-001: Improve /limits command
+## T-004: Extract shared utilities into a common module
 
-**Goal:** Display cooldowns + auth expiry only, avoid dumping the full configured model list.
+**GitHub Issue:** [#1](https://github.com/homeofe/openclaw-ops/issues/1)
+**Priority:** HIGH
 
-**Context:**
-- `/limits` currently may dump all model names (privacy/verbosity issue)
-- Should only report: active cooldowns with ETA, auth expiry windows
-- State source: `memory/model-ratelimits.json` (if model-failover enabled)
+**Goal:** Eliminate duplicated utility functions between index.ts and extensions/phase1-commands.ts.
 
 **What to do:**
-1. Open the `/limits` command handler
-2. Filter output to show only: active cooldown windows, auth token expiry, rate limit reset ETAs
-3. Remove or hide the full model list from output
-4. Test: run `/limits` and verify output is minimal and safe
-
-**Files:**
-- Command handler file for `/limits` (check package.json for entry point)
+1. Create `lib/utils.ts` exporting: `expandHome`, `safeExec`, `runCmd`, `latestFile`, `formatBytes`, `checkGatewayStatus`
+2. Refactor `index.ts` to import from `lib/utils.ts`
+3. Refactor `extensions/phase1-commands.ts` to import from `lib/utils.ts`
+4. Unify the `runCmd` default timeout (currently 120s in index.ts vs 30s in phase1-commands.ts)
+5. Update `tsconfig.json` include paths if needed
+6. Verify all commands still work
 
 **Definition of done:**
-- [ ] `/limits` output shows only windows/ETAs
-- [ ] No model list in output
-- [ ] STATUS.md updated
+- [ ] No duplicated utility functions between files
+- [ ] All existing commands still work after refactor
+- [ ] New extensions can import shared utilities from one location
 
 ---
 
-## T-002: Add active cooldown detection from model-failover state
+## T-005: Add test infrastructure and basic command tests
 
-**Goal:** Best-effort detection of active cooldowns from model-failover state file.
-
-**Context:**
-- model-failover writes state to `~/.openclaw/workspace/memory/model-ratelimits.json`
-- `/limits` should read this file if present and surface active cooldowns
+**GitHub Issue:** [#2](https://github.com/homeofe/openclaw-ops/issues/2)
+**Priority:** HIGH
+**Depends on:** T-004 (easier to test shared utilities once extracted)
 
 **What to do:**
-1. Read `memory/model-ratelimits.json` if it exists
-2. Parse active cooldowns (models with non-zero cooldown remaining)
-3. Surface as: "Model X: cooldown expires in Y minutes"
-4. Gracefully skip if file not found
+1. Add vitest as a dev dependency
+2. Add `"test": "vitest run"` to package.json scripts
+3. Write unit tests for pure utility functions (expandHome, formatBytes, latestFile)
+4. Write integration tests for command handlers with mocked exec/spawn
+5. Verify `npm test` passes
 
 **Definition of done:**
-- [ ] `/limits` reads and parses model-failover state
-- [ ] Active cooldowns shown with ETA
-- [ ] Graceful fallback if file missing
+- [ ] `npm test` runs and passes
+- [ ] At least 5 unit tests + 2 command handler tests
+- [ ] CI-friendly (no interactive prompts, no filesystem side effects)
 
 ---
 
-## T-003: Fix and re-enable triage CI ⏳ Blocked
+## T-007: Fix Windows disk usage detection in /health
 
-**Goal:** Re-enable the `openclaw-triage-labels` GitHub Actions workflow.
+**GitHub Issue:** [#4](https://github.com/homeofe/openclaw-ops/issues/4)
+**Priority:** MEDIUM
 
-**Blocked by:** Need to resolve 403 cross-repo permission errors with GITHUB_TOKEN.
+**What to do:**
+1. Replace deprecated `wmic` with PowerShell `Get-PSDrive`
+2. Detect correct drive letter from workspace path
+3. Show used/total/percentage format
+4. Graceful fallback if PowerShell unavailable
+
+---
+
+## T-006: Implement /config command
+
+**GitHub Issue:** [#3](https://github.com/homeofe/openclaw-ops/issues/3)
+**Priority:** MEDIUM
+**Depends on:** T-004 (should use shared utilities)
+
+**What to do:**
+1. Create new command handler in `extensions/phase2-commands.ts`
+2. Show current config, resolved paths, environment info
+3. Validate against JSON schema
+4. Mask secrets in output
+5. Register in main register function
+6. Update README.md
+
+---
+
+## T-003: Fix triage CI cross-repo permissions
+
+**GitHub Issue:** [#5](https://github.com/homeofe/openclaw-ops/issues/5)
+**Priority:** LOW
+**Blocked by:** Requires PAT with repo scope set as TRIAGE_GH_TOKEN secret
 
 **What to do once unblocked:**
-1. Investigate why GITHUB_TOKEN gets 403 on cross-repo issue updates
-2. Options: use PAT with repo scope, or narrow scope to only the current repo
-3. Update `.github/workflows/openclaw-triage-labels.yml`
-4. Test with a manual dispatch
-5. Re-enable scheduled trigger
+1. Create fine-grained PAT scoped to homeofe/openclaw-* repos with issues:write
+2. Add as TRIAGE_GH_TOKEN repository secret
+3. Re-enable schedule trigger in workflow YAML
+4. Test with manual dispatch
 
 ---
 
@@ -70,12 +94,15 @@
 
 | Item | Resolution |
 |------|-----------|
+| Phase 1 commands (/health, /services, /logs, /plugins) | Implemented 2026-02-27, commit 72c5109 |
+| v0.2 roadmap definition | Defined 2026-02-27, 5 GitHub issues created |
 | /cron + /privacy-scan | Created 2026-02-24 |
 | /limits | Created 2026-02-24 |
 | /release + /handoff | Created 2026-02-25 |
 | /staging-smoke | Created 2026-02-25 |
 | openclaw.extensions patches | Applied to 5 repos 2026-02-25 |
 | Triage CI | Suspended 2026-02-26 (403 errors) |
+| AAHP v3 migration | Completed 2026-02-26 |
 
 ---
 
@@ -83,9 +110,12 @@
 
 | What | Where |
 |------|-------|
+| Main entry point | `index.ts` |
+| Phase 1 extensions | `extensions/phase1-commands.ts` |
+| Plugin manifest | `openclaw.plugin.json` |
 | Cron scripts | `cron/scripts/*.sh` |
 | Cron reports | `cron/reports/*` |
 | Release checklist | `RELEASE.md` |
 | Failover state | `memory/model-ratelimits.json` |
-| Plugin manifest | `openclaw.plugin.json` |
 | CI workflow | `.github/workflows/openclaw-triage-labels.yml` |
+| Triage script | `scripts/triage_labels.py` |

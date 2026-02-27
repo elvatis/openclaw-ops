@@ -2,37 +2,37 @@
   "aahp_version": "3.0",
   "project": "openclaw-ops",
   "last_session": {
-    "agent": "claude-sonnet-4.6",
-    "session_id": "aahp-migration-2026-02-26",
-    "timestamp": "2026-02-26T23:16:45Z",
-    "commit": "3789a72",
-    "phase": "implementation",
+    "agent": "claude-opus-4.6",
+    "session_id": "v02-roadmap-2026-02-27",
+    "timestamp": "2026-02-27T01:50:00Z",
+    "commit": "pending",
+    "phase": "planning",
     "duration_minutes": 0
   },
   "files": {
     "STATUS.md": {
       "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-02-26T23:16:45Z",
-      "lines": 55,
-      "summary": "Active plugin. All commands working. Triage CI suspended. /limits needs improvement."
+      "updated": "2026-02-27T01:50:00Z",
+      "lines": 85,
+      "summary": "Active plugin v0.2.0. Phase 1 + legacy commands working. v0.2 roadmap defined with 5 GitHub issues. Triage CI suspended."
     },
     "NEXT_ACTIONS.md": {
       "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-02-26T23:16:45Z",
-      "lines": 60,
-      "summary": "3 tasks. T-001 (/limits improvement) and T-002 (cooldown detection) ready. T-003 (triage CI) blocked."
+      "updated": "2026-02-27T01:50:00Z",
+      "lines": 110,
+      "summary": "5 tasks linked to GitHub issues. T-004 (refactor) and T-005 (tests) are high priority. T-006 (config), T-007 (windows fix) medium. T-003 (triage CI) low/blocked."
     },
     "LOG.md": {
       "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-02-26T23:16:45Z",
-      "lines": 30,
-      "summary": "Last entry: AAHP v3 migration. Previous: triage CI suspended, staging smoke, openclaw.extensions patches."
+      "updated": "2026-02-27T01:50:00Z",
+      "lines": 70,
+      "summary": "Latest: v0.2 roadmap definition (5 GitHub issues). Previous: AAHP v3 migration, Phase 1 commands, staging smoke, triage CI."
     },
     "DASHBOARD.md": {
       "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
-      "updated": "2026-02-26T23:16:45Z",
-      "lines": 35,
-      "summary": "T-001 and T-002 ready. T-003 blocked on 403 permission fix."
+      "updated": "2026-02-27T01:50:00Z",
+      "lines": 55,
+      "summary": "v0.2 roadmap with 5 GitHub issues. T-004 through T-007 linked to issues #1-#5."
     },
     "TRUST.md": {
       "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
@@ -53,35 +53,70 @@
       "summary": "2-agent pipeline. Safety rules: no secrets in output, staging gate required."
     }
   },
-  "quick_context": "openclaw-ops active plugin. /cron, /privacy-scan, /limits, /release, /handoff, /staging-smoke all working. Triage CI suspended (403 cross-repo errors). Next: T-001 improve /limits output (remove model list), T-002 add cooldown detection from model-failover state, T-003 fix triage CI (blocked).",
+  "quick_context": "openclaw-ops v0.2.0 active plugin. Phase 1 commands (/health, /services, /logs, /plugins) + legacy commands (/cron, /privacy-scan, /limits, /release, /handoff, /staging-smoke) all working. Triage CI suspended (403). v0.2 roadmap defined: 5 GitHub issues covering utility refactor (#1), test infrastructure (#2), /config command (#3), Windows disk fix (#4), triage CI fix (#5). Recommended order: #1 -> #2 -> #4 -> #3 -> #5.",
   "token_budget": {
-    "manifest_only": 85,
-    "manifest_plus_core": 380,
-    "full_read": 1200
+    "manifest_only": 100,
+    "manifest_plus_core": 450,
+    "full_read": 1500
   },
-  "next_task_id": 4,
+  "next_task_id": 8,
   "tasks": {
     "T-001": {
       "title": "Improve /limits command output",
       "status": "ready",
       "priority": "medium",
       "depends_on": [],
-      "created": "2026-02-26T23:16:45Z"
+      "created": "2026-02-26T23:16:45Z",
+      "note": "Covered by T-004 refactor"
     },
     "T-002": {
       "title": "Add active cooldown detection from model-failover state",
       "status": "ready",
       "priority": "medium",
       "depends_on": [],
-      "created": "2026-02-26T23:16:45Z"
+      "created": "2026-02-26T23:16:45Z",
+      "note": "Covered by T-004 refactor"
     },
     "T-003": {
       "title": "Fix and re-enable triage CI",
       "status": "blocked",
       "priority": "low",
       "depends_on": [],
-      "blocked_by": "403 cross-repo permission error with GITHUB_TOKEN - needs investigation",
-      "created": "2026-02-26T23:16:45Z"
+      "blocked_by": "403 cross-repo permission error - needs PAT with repo scope",
+      "created": "2026-02-26T23:16:45Z",
+      "github_issue": "https://github.com/homeofe/openclaw-ops/issues/5"
+    },
+    "T-004": {
+      "title": "Extract shared utilities into a common module",
+      "status": "ready",
+      "priority": "high",
+      "depends_on": [],
+      "created": "2026-02-27T01:50:00Z",
+      "github_issue": "https://github.com/homeofe/openclaw-ops/issues/1"
+    },
+    "T-005": {
+      "title": "Add test infrastructure and basic command tests",
+      "status": "ready",
+      "priority": "high",
+      "depends_on": ["T-004"],
+      "created": "2026-02-27T01:50:00Z",
+      "github_issue": "https://github.com/homeofe/openclaw-ops/issues/2"
+    },
+    "T-006": {
+      "title": "Implement Phase 2 /config command",
+      "status": "ready",
+      "priority": "medium",
+      "depends_on": ["T-004"],
+      "created": "2026-02-27T01:50:00Z",
+      "github_issue": "https://github.com/homeofe/openclaw-ops/issues/3"
+    },
+    "T-007": {
+      "title": "Fix Windows disk usage detection in /health",
+      "status": "ready",
+      "priority": "medium",
+      "depends_on": [],
+      "created": "2026-02-27T01:50:00Z",
+      "github_issue": "https://github.com/homeofe/openclaw-ops/issues/4"
     }
   }
 }
