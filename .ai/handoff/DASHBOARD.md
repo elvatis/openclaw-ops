@@ -44,11 +44,11 @@ Operational commands for OpenClaw:
 
 | Issue | Title | Labels | Priority | Status |
 |-------|-------|--------|----------|--------|
-| [#1](https://github.com/homeofe/openclaw-ops/issues/1) | Extract shared utilities into a common module | enhancement | High | Open |
-| [#2](https://github.com/homeofe/openclaw-ops/issues/2) | Add test infrastructure and basic command tests | enhancement | High | Open |
-| [#3](https://github.com/homeofe/openclaw-ops/issues/3) | Implement Phase 2 /config command | enhancement | Medium | Open |
-| [#4](https://github.com/homeofe/openclaw-ops/issues/4) | Fix Windows disk usage detection in /health | bug | Medium | Open |
-| [#5](https://github.com/homeofe/openclaw-ops/issues/5) | Fix triage CI workflow cross-repo 403 errors | bug | Low | Open |
+| [#1](https://github.com/homeofe/openclaw-ops/issues/1) | Extract shared utilities into a common module | enhancement | High | Done |
+| [#2](https://github.com/homeofe/openclaw-ops/issues/2) | Add test infrastructure and basic command tests | enhancement | High | Done |
+| [#3](https://github.com/homeofe/openclaw-ops/issues/3) | Implement Phase 2 /config command | enhancement | Medium | Done |
+| [#4](https://github.com/homeofe/openclaw-ops/issues/4) | Fix Windows disk usage detection in /health | bug | Medium | Done |
+| [#5](https://github.com/homeofe/openclaw-ops/issues/5) | Fix triage CI workflow cross-repo 403 errors | bug | Low | Blocked |
 
 ---
 
@@ -56,10 +56,16 @@ Operational commands for OpenClaw:
 
 | ID | Task | Priority | Blocked by | Ready? | GitHub Issue |
 |----|------|----------|-----------|--------|--------------|
-| T-001 | Improve /limits output | MEDIUM | - | Ready | Covered by #1 refactor |
-| T-002 | Add cooldown detection from model-failover | MEDIUM | - | Ready | Covered by #1 refactor |
 | T-003 | Fix and re-enable triage CI | LOW | 403 permission issue | Blocked | [#5](https://github.com/homeofe/openclaw-ops/issues/5) |
-| T-004 | Extract shared utilities | HIGH | - | Ready | [#1](https://github.com/homeofe/openclaw-ops/issues/1) |
-| T-005 | Add test infrastructure | HIGH | - | Ready | [#2](https://github.com/homeofe/openclaw-ops/issues/2) |
-| T-006 | Implement /config command | MEDIUM | T-004 | After #1 | [#3](https://github.com/homeofe/openclaw-ops/issues/3) |
-| T-007 | Fix Windows disk detection | MEDIUM | - | Ready | [#4](https://github.com/homeofe/openclaw-ops/issues/4) |
+
+## Completed Tasks
+
+| ID | Task | Completed |
+|----|------|-----------|
+| T-001 | Improve /limits output | 2026-02-27 |
+| T-002 | Add cooldown detection from model-failover | 2026-02-27 |
+| T-004 | Extract shared utilities | 2026-02-27 |
+| T-005 | Add test infrastructure (159 vitest tests) | 2026-02-27 |
+| T-006 | Implement /config command | 2026-02-27 |
+| T-007 | Fix Windows disk detection | 2026-02-27 |
+| T-008 | Add /skills and /shortcuts commands | 2026-02-27 |
