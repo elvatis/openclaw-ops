@@ -231,7 +231,7 @@ def main() -> int:
 
     print(f"token source: {token_source}")
     if token_source == "GITHUB_TOKEN":
-        print("⚠️  Using GITHUB_TOKEN; cross-repo labeling may be skipped without TRIAGE_GH_TOKEN.")
+        print("[WARN] Using GITHUB_TOKEN - cross-repo labeling may be skipped without TRIAGE_GH_TOKEN.")
 
     s = session(token)
 
