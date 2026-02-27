@@ -1,0 +1,87 @@
+{
+  "aahp_version": "3.0",
+  "project": "openclaw-ops",
+  "last_session": {
+    "agent": "claude-sonnet-4.6",
+    "session_id": "aahp-migration-2026-02-26",
+    "timestamp": "2026-02-26T23:16:45Z",
+    "commit": "3789a72",
+    "phase": "implementation",
+    "duration_minutes": 0
+  },
+  "files": {
+    "STATUS.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-02-26T23:16:45Z",
+      "lines": 55,
+      "summary": "Active plugin. All commands working. Triage CI suspended. /limits needs improvement."
+    },
+    "NEXT_ACTIONS.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-02-26T23:16:45Z",
+      "lines": 60,
+      "summary": "3 tasks. T-001 (/limits improvement) and T-002 (cooldown detection) ready. T-003 (triage CI) blocked."
+    },
+    "LOG.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-02-26T23:16:45Z",
+      "lines": 30,
+      "summary": "Last entry: AAHP v3 migration. Previous: triage CI suspended, staging smoke, openclaw.extensions patches."
+    },
+    "DASHBOARD.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-02-26T23:16:45Z",
+      "lines": 35,
+      "summary": "T-001 and T-002 ready. T-003 blocked on 403 permission fix."
+    },
+    "TRUST.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-02-26T23:16:45Z",
+      "lines": 40,
+      "summary": "Commands assumed working. No build/test verification. Triage CI untested."
+    },
+    "CONVENTIONS.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-02-26T23:16:45Z",
+      "lines": 40,
+      "summary": "Report-only for destructive ops, staging gate, no secrets in output."
+    },
+    "WORKFLOW.md": {
+      "checksum": "sha256:0000000000000000000000000000000000000000000000000000000000000000",
+      "updated": "2026-02-26T23:16:45Z",
+      "lines": 55,
+      "summary": "2-agent pipeline. Safety rules: no secrets in output, staging gate required."
+    }
+  },
+  "quick_context": "openclaw-ops active plugin. /cron, /privacy-scan, /limits, /release, /handoff, /staging-smoke all working. Triage CI suspended (403 cross-repo errors). Next: T-001 improve /limits output (remove model list), T-002 add cooldown detection from model-failover state, T-003 fix triage CI (blocked).",
+  "token_budget": {
+    "manifest_only": 85,
+    "manifest_plus_core": 380,
+    "full_read": 1200
+  },
+  "next_task_id": 4,
+  "tasks": {
+    "T-001": {
+      "title": "Improve /limits command output",
+      "status": "ready",
+      "priority": "medium",
+      "depends_on": [],
+      "created": "2026-02-26T23:16:45Z"
+    },
+    "T-002": {
+      "title": "Add active cooldown detection from model-failover state",
+      "status": "ready",
+      "priority": "medium",
+      "depends_on": [],
+      "created": "2026-02-26T23:16:45Z"
+    },
+    "T-003": {
+      "title": "Fix and re-enable triage CI",
+      "status": "blocked",
+      "priority": "low",
+      "depends_on": [],
+      "blocked_by": "403 cross-repo permission error with GITHUB_TOKEN - needs investigation",
+      "created": "2026-02-26T23:16:45Z"
+    }
+  }
+}
