@@ -2,12 +2,12 @@
   "aahp_version": "3.0",
   "project": "openclaw-ops",
   "last_session": {
-    "agent": "claude-opus-4.6",
-    "session_id": "t002-cooldown-detection-2026-02-27",
-    "timestamp": "2026-02-27T03:35:00Z",
+    "agent": "claude-code",
+    "session_id": "t004-shared-utils-refactor-2026-02-27",
+    "timestamp": "2026-02-27T04:15:00.000Z",
     "commit": "pending",
     "phase": "implementation",
-    "duration_minutes": 20
+    "duration_minutes": 15
   },
   "files": {
     "STATUS.md": {
@@ -53,7 +53,7 @@
       "summary": "2-agent pipeline. Safety rules: no secrets in output, staging gate required."
     }
   },
-  "quick_context": "openclaw-ops v0.2.0 active plugin. Phase 1 commands (/health, /services, /logs, /plugins) + legacy commands all working. /health now shows active model cooldowns from model-failover state. /limits refactored to use shared cooldown utility. T-002 (cooldown detection) done, T-005 (tests) ready, T-007 (win disk) ready, T-006 (config) ready, T-003 (triage) blocked.",
+  "quick_context": "openclaw-ops v0.2.0 active plugin. All commands working. src/utils.ts is the single shared utility module (expandHome, safeExec, runCmd, latestFile, formatBytes, formatIsoCompact, readJsonSafe, listWorkspacePluginDirs, cooldown helpers, system helpers). Legacy commands extracted from index.ts into extensions/legacy-commands.ts. index.ts is now a thin entry point. 37 tests passing. T-004 (shared utils) done, T-005 (tests) ready, T-006 (config) ready, T-003 (triage) blocked.",
   "token_budget": {
     "manifest_only": 100,
     "manifest_plus_core": 450,
@@ -76,8 +76,8 @@
       "priority": "medium",
       "depends_on": [],
       "created": "2026-02-26T23:16:45Z",
-      "completed": "2026-02-27T03:35:00Z",
-      "note": "Extracted loadActiveCooldowns + formatCooldownLine into src/utils.ts, added COOLDOWNS section to /health, refactored /limits to use shared utility, 9 new tests"
+      "note": "Covered by T-004 refactor",
+      "completed": "2026-02-27T02:34:19.068Z"
     },
     "T-003": {
       "title": "Fix and re-enable triage CI",
@@ -90,17 +90,21 @@
     },
     "T-004": {
       "title": "Extract shared utilities into a common module",
-      "status": "ready",
+      "status": "done",
       "priority": "high",
       "depends_on": [],
       "created": "2026-02-27T01:50:00Z",
-      "github_issue": "https://github.com/homeofe/openclaw-ops/issues/1"
+      "completed": "2026-02-27T04:15:00.000Z",
+      "github_issue": "https://github.com/homeofe/openclaw-ops/issues/1",
+      "note": "src/utils.ts: single shared module with all cross-cutting helpers. Legacy commands extracted to extensions/legacy-commands.ts. index.ts is now a thin entry point. All consumers updated. 37 tests passing (was 27)."
     },
     "T-005": {
       "title": "Add test infrastructure and basic command tests",
       "status": "ready",
       "priority": "high",
-      "depends_on": ["T-004"],
+      "depends_on": [
+        "T-004"
+      ],
       "created": "2026-02-27T01:50:00Z",
       "github_issue": "https://github.com/homeofe/openclaw-ops/issues/2"
     },
@@ -108,7 +112,9 @@
       "title": "Implement Phase 2 /config command",
       "status": "ready",
       "priority": "medium",
-      "depends_on": ["T-004"],
+      "depends_on": [
+        "T-004"
+      ],
       "created": "2026-02-27T01:50:00Z",
       "github_issue": "https://github.com/homeofe/openclaw-ops/issues/3"
     },

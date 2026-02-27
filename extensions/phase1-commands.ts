@@ -16,6 +16,8 @@ import {
   checkGatewayStatus,
   loadActiveCooldowns,
   formatCooldownLine,
+  readJsonSafe,
+  listWorkspacePluginDirs,
 } from "../src/utils.js";
 
 export function registerPhase1Commands(api: any, workspace: string) {
@@ -161,14 +163,10 @@ export function registerPhase1Commands(api: any, workspace: string) {
             ? expandHome("~/.openclaw/config.json")
             : expandHome(`~/.openclaw-${profile}/config.json`);
           
-          try {
-            if (fs.existsSync(configPath)) {
-              const config = JSON.parse(fs.readFileSync(configPath, "utf-8"));
-              const port = config?.gateway?.port || config?.port || "default";
-              lines.push(`  Port: ${port}`);
-            }
-          } catch {
-            // Skip port info
+          const config = readJsonSafe<{ gateway?: { port?: string }; port?: string } | null>(configPath, null);
+          if (config) {
+            const port = config.gateway?.port || config.port || "default";
+            lines.push(`  Port: ${port}`);
           }
         }
       }
@@ -304,26 +302,15 @@ export function registerPhase1Commands(api: any, workspace: string) {
       }
       
       // Enhanced details from workspace
-      const wsPlugins = path.join(workspace);
-      try {
-        const dirs = fs.readdirSync(wsPlugins).filter((d: string) => 
-          d.startsWith("openclaw-") && 
-          fs.existsSync(path.join(wsPlugins, d, "openclaw.plugin.json"))
-        );
-        
-        for (const plugin of pluginDetails) {
-          const pluginDir = dirs.find((d: string) => d === plugin.name || d.endsWith(plugin.name));
-          if (pluginDir) {
-            const pkgPath = path.join(wsPlugins, pluginDir, "package.json");
-            if (fs.existsSync(pkgPath)) {
-              const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
-              plugin.version = pkg.version;
-            }
-            plugin.path = pluginDir;
-          }
+      const dirs = listWorkspacePluginDirs(workspace);
+
+      for (const plugin of pluginDetails) {
+        const pluginDir = dirs.find((d: string) => d === plugin.name || d.endsWith(plugin.name));
+        if (pluginDir) {
+          const pkg = readJsonSafe<{ version?: string } | null>(path.join(workspace, pluginDir, "package.json"), null);
+          if (pkg?.version) plugin.version = pkg.version;
+          plugin.path = pluginDir;
         }
-      } catch {
-        // Continue without enhanced details
       }
       
       // Display formatted
@@ -343,25 +330,15 @@ export function registerPhase1Commands(api: any, workspace: string) {
       // Check for available but not installed
       lines.push("");
       lines.push("AVAILABLE IN WORKSPACE");
-      try {
-        const workspacePlugins = fs.readdirSync(workspace)
-          .filter((d: string) => 
-            d.startsWith("openclaw-") && 
-            fs.existsSync(path.join(workspace, d, "openclaw.plugin.json"))
-          );
-        
-        const installedNames = new Set(pluginDetails.map((p: any) => p.name));
-        const available = workspacePlugins.filter((wp: string) => !installedNames.has(wp));
-        
-        if (available.length > 0) {
-          for (const avail of available) {
-            lines.push(`- ${avail} (not installed)`);
-          }
-        } else {
-          lines.push("- (all workspace plugins installed)");
+      const installedNames = new Set(pluginDetails.map((p: any) => p.name));
+      const available = dirs.filter((wp: string) => !installedNames.has(wp));
+
+      if (available.length > 0) {
+        for (const avail of available) {
+          lines.push(`- ${avail} (not installed)`);
         }
-      } catch {
-        lines.push("- (unable to scan workspace)");
+      } else {
+        lines.push("- (all workspace plugins installed)");
       }
       
       return { text: lines.join("\n") };

@@ -2,7 +2,18 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 import os from "node:os";
 import fs from "node:fs";
 import path from "node:path";
-import { expandHome, safeExec, runCmd, latestFile, formatBytes, loadActiveCooldowns, formatCooldownLine } from "./utils.js";
+import {
+  expandHome,
+  safeExec,
+  runCmd,
+  latestFile,
+  formatBytes,
+  loadActiveCooldowns,
+  formatCooldownLine,
+  formatIsoCompact,
+  readJsonSafe,
+  listWorkspacePluginDirs,
+} from "./utils.js";
 import type { CooldownEntry } from "./utils.js";
 
 // ---------------------------------------------------------------------------
@@ -239,5 +250,119 @@ describe("formatCooldownLine", () => {
     };
     const line = formatCooldownLine(entry);
     expect(line).toMatch(/~1m/);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// formatIsoCompact
+// ---------------------------------------------------------------------------
+describe("formatIsoCompact", () => {
+  it("formats a Date object into YYYY-MM-DD HH:MM", () => {
+    const d = new Date("2026-03-15T14:30:00Z");
+    expect(formatIsoCompact(d)).toBe("2026-03-15 14:30");
+  });
+
+  it("formats an epoch-ms number", () => {
+    const ms = new Date("2026-01-01T00:00:00Z").getTime();
+    expect(formatIsoCompact(ms)).toBe("2026-01-01 00:00");
+  });
+
+  it("returns a 16-character string (YYYY-MM-DD HH:MM)", () => {
+    expect(formatIsoCompact(new Date())).toMatch(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}$/);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// readJsonSafe
+// ---------------------------------------------------------------------------
+describe("readJsonSafe", () => {
+  const tmpDir = path.join(os.tmpdir(), "openclaw-ops-test-json-" + process.pid);
+
+  afterEach(() => {
+    try {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    } catch {
+      // ignore
+    }
+  });
+
+  it("parses a valid JSON file", () => {
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const fp = path.join(tmpDir, "valid.json");
+    fs.writeFileSync(fp, JSON.stringify({ name: "test", version: "1.0" }), "utf-8");
+    const result = readJsonSafe(fp, null);
+    expect(result).toEqual({ name: "test", version: "1.0" });
+  });
+
+  it("returns fallback for non-existent file", () => {
+    const result = readJsonSafe("/tmp/does-not-exist-xyz-99999.json", { default: true });
+    expect(result).toEqual({ default: true });
+  });
+
+  it("returns fallback for invalid JSON", () => {
+    fs.mkdirSync(tmpDir, { recursive: true });
+    const fp = path.join(tmpDir, "bad.json");
+    fs.writeFileSync(fp, "not json{{{", "utf-8");
+    expect(readJsonSafe(fp, "fallback")).toBe("fallback");
+  });
+});
+
+// ---------------------------------------------------------------------------
+// listWorkspacePluginDirs
+// ---------------------------------------------------------------------------
+describe("listWorkspacePluginDirs", () => {
+  const tmpDir = path.join(os.tmpdir(), "openclaw-ops-test-plugins-" + process.pid);
+
+  afterEach(() => {
+    try {
+      fs.rmSync(tmpDir, { recursive: true, force: true });
+    } catch {
+      // ignore
+    }
+  });
+
+  it("returns empty array for non-existent workspace", () => {
+    expect(listWorkspacePluginDirs("/tmp/nonexistent-ws-xyz-99999")).toEqual([]);
+  });
+
+  it("returns empty array when no plugin dirs exist", () => {
+    fs.mkdirSync(tmpDir, { recursive: true });
+    fs.mkdirSync(path.join(tmpDir, "some-other-dir"), { recursive: true });
+    expect(listWorkspacePluginDirs(tmpDir)).toEqual([]);
+  });
+
+  it("only returns openclaw-* dirs that have openclaw.plugin.json", () => {
+    fs.mkdirSync(tmpDir, { recursive: true });
+
+    // Dir with manifest - should be included
+    const goodDir = path.join(tmpDir, "openclaw-alpha");
+    fs.mkdirSync(goodDir, { recursive: true });
+    fs.writeFileSync(path.join(goodDir, "openclaw.plugin.json"), "{}", "utf-8");
+
+    // Dir without manifest - should be excluded
+    const noManifest = path.join(tmpDir, "openclaw-beta");
+    fs.mkdirSync(noManifest, { recursive: true });
+
+    // Non-openclaw dir - should be excluded
+    const unrelated = path.join(tmpDir, "other-project");
+    fs.mkdirSync(unrelated, { recursive: true });
+    fs.writeFileSync(path.join(unrelated, "openclaw.plugin.json"), "{}", "utf-8");
+
+    const result = listWorkspacePluginDirs(tmpDir);
+    expect(result).toEqual(["openclaw-alpha"]);
+  });
+
+  it("returns sorted results", () => {
+    fs.mkdirSync(tmpDir, { recursive: true });
+    for (const name of ["openclaw-zeta", "openclaw-alpha", "openclaw-mid"]) {
+      const dir = path.join(tmpDir, name);
+      fs.mkdirSync(dir, { recursive: true });
+      fs.writeFileSync(path.join(dir, "openclaw.plugin.json"), "{}", "utf-8");
+    }
+    expect(listWorkspacePluginDirs(tmpDir)).toEqual([
+      "openclaw-alpha",
+      "openclaw-mid",
+      "openclaw-zeta",
+    ]);
   });
 });

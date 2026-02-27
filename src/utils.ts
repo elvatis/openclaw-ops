@@ -1,8 +1,17 @@
 /**
  * Shared utility functions for openclaw-ops.
  *
- * Extracted from index.ts and extensions/phase1-commands.ts to eliminate
- * duplication and provide a single source of truth.
+ * Single source of truth for all cross-cutting helpers used by index.ts
+ * and extension modules. Grouped by domain:
+ *
+ *   - Path helpers
+ *   - Shell / process helpers
+ *   - Filesystem helpers
+ *   - JSON helpers
+ *   - Formatting helpers
+ *   - Cooldown / model-failover state helpers
+ *   - System inspection helpers
+ *   - Workspace / plugin scanning helpers
  */
 
 import fs from "node:fs";
@@ -86,8 +95,36 @@ export function latestFile(dir: string, prefix: string): string | null {
 }
 
 // ---------------------------------------------------------------------------
+// JSON helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Read a JSON file and return the parsed value, or `fallback` when the file
+ * is missing, unreadable, or contains invalid JSON.
+ */
+export function readJsonSafe<T = any>(filePath: string, fallback: T): T {
+  try {
+    return JSON.parse(fs.readFileSync(filePath, "utf-8")) as T;
+  } catch {
+    return fallback;
+  }
+}
+
+// ---------------------------------------------------------------------------
 // Formatting helpers
 // ---------------------------------------------------------------------------
+
+/**
+ * Format a Date (or epoch-ms number) into a compact ISO-ish string:
+ * `"YYYY-MM-DD HH:MM"` (UTC).
+ *
+ * Useful for human-readable timestamps in command output. The same pattern
+ * was previously inlined in index.ts, formatCooldownLine, and observer-commands.
+ */
+export function formatIsoCompact(input: Date | number): string {
+  const d = typeof input === "number" ? new Date(input) : input;
+  return d.toISOString().slice(0, 16).replace("T", " ");
+}
 
 /** Format a byte count into a human-readable string (B, KB, MB, GB). */
 export function formatBytes(bytes: number): string {
@@ -160,10 +197,7 @@ export function formatCooldownLine(entry: CooldownEntry): string {
     eta = `~${etaMin}m`;
   }
 
-  const until = new Date(entry.nextAvailableAt * 1000)
-    .toISOString()
-    .slice(0, 16)
-    .replace("T", " ");
+  const until = formatIsoCompact(entry.nextAvailableAt * 1000);
 
   return `${entry.model} - ${until} UTC (${eta})`;
 }
@@ -232,4 +266,29 @@ export function checkGatewayStatus(
   if (uptimeMatch) uptime = uptimeMatch[1].trim();
 
   return { running, pid, uptime };
+}
+
+// ---------------------------------------------------------------------------
+// Workspace / plugin scanning helpers
+// ---------------------------------------------------------------------------
+
+/**
+ * Return the list of `openclaw-*` directory names under `workspace` that
+ * contain an `openclaw.plugin.json` manifest, sorted alphabetically.
+ *
+ * Returns an empty array when the workspace is missing or unreadable.
+ */
+export function listWorkspacePluginDirs(workspace: string): string[] {
+  try {
+    return fs
+      .readdirSync(workspace)
+      .filter(
+        (d) =>
+          d.startsWith("openclaw-") &&
+          fs.existsSync(path.join(workspace, d, "openclaw.plugin.json")),
+      )
+      .sort();
+  } catch {
+    return [];
+  }
 }

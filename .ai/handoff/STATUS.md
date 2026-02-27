@@ -1,6 +1,6 @@
 # openclaw-ops: Current State of the Nation
 
-> Last updated: 2026-02-27 by claude-opus-4.6 (T-002 cooldown detection)
+> Last updated: 2026-02-27 by claude-opus-4.6 (T-004 shared utils refactor)
 > Commit: pending
 >
 > **Rule:** This file is rewritten (not appended) at the end of every session.
@@ -9,7 +9,7 @@
 ---
 
 <!-- SECTION: summary -->
-Active plugin at v0.2.0. Phase 1 commands (/health, /services, /logs, /plugins) implemented alongside legacy commands (/cron, /privacy-scan, /limits, /release, /handoff, /staging-smoke). /health now includes active cooldown detection from model-failover state. /limits refactored to use shared cooldown utility. Triage CI suspended. v0.2 roadmap in progress.
+Active plugin at v0.2.0. All commands working. src/utils.ts is the single shared utility module exporting all cross-cutting helpers (path, shell, filesystem, JSON, formatting, cooldown, system, workspace scanning). Legacy commands extracted from index.ts into extensions/legacy-commands.ts. index.ts is now a thin entry point that delegates to four extension modules. 37 vitest tests passing. Triage CI suspended. v0.2 roadmap in progress.
 <!-- /SECTION: summary -->
 
 <!-- SECTION: build_health -->
@@ -18,28 +18,66 @@ Active plugin at v0.2.0. Phase 1 commands (/health, /services, /logs, /plugins) 
 | Check | Result | Notes |
 |-------|--------|-------|
 | `tsc --noEmit` | Pass | Verified 2026-02-27 |
-| `npm test` | Pass (27 tests) | Vitest configured, 27 tests passing |
+| `npm test` | Pass (37 tests) | Vitest configured, 37 tests passing |
 | `lint` | (Unknown) | Not configured |
 
 <!-- /SECTION: build_health -->
 
 ---
 
+<!-- SECTION: architecture -->
+## Architecture
+
+```
+index.ts                      -- thin entry point, delegates to extensions
+src/utils.ts                  -- single shared utility module (all helpers)
+src/utils.test.ts             -- 37 tests for shared utilities
+extensions/
+  legacy-commands.ts          -- /cron, /privacy-scan, /release, /staging-smoke, /handoff, /limits
+  phase1-commands.ts          -- /health, /services, /logs, /plugins
+  observer-commands.ts        -- /sessions, /activity, /session-tail, /session-stats, /session-clear
+  skills-commands.ts          -- /skills, /shortcuts
+```
+
+### Shared utilities (src/utils.ts)
+
+| Category | Exports |
+|----------|---------|
+| Path | `expandHome` |
+| Shell | `safeExec`, `runCmd` |
+| Filesystem | `latestFile` |
+| JSON | `readJsonSafe` |
+| Formatting | `formatBytes`, `formatIsoCompact` |
+| Cooldown | `CooldownEntry`, `loadActiveCooldowns`, `formatCooldownLine` |
+| System | `getSystemResources`, `checkGatewayStatus` |
+| Workspace | `listWorkspacePluginDirs` |
+
+<!-- /SECTION: architecture -->
+
+---
+
 <!-- SECTION: commands -->
 ## Commands
 
-| Command | Status | Notes |
+| Command | Module | Notes |
 |---------|--------|-------|
-| `/health` | Active | Gateway status, system resources, plugin count, model cooldowns, recent errors |
-| `/services` | Active | Profile listing, gateway state per profile, port bindings |
-| `/logs` | Active | Unified log viewer with service and line-count args |
-| `/plugins` | Active | Enhanced plugin dashboard with versions and workspace info |
-| `/cron` | Active | Shows crontab + systemd timers + scripts + latest reports |
-| `/privacy-scan` | Active | Report-only, filenames only for secret matches |
-| `/limits` | Active | Shows cooldown windows + auth expiry ETAs (uses shared cooldown utility) |
-| `/release` | Active | Prints QA gate checklist |
-| `/handoff` | Active | Shows recent handoff log tail |
-| `/staging-smoke` | Active | Sequential staging installs for all openclaw-* repos |
+| `/health` | phase1-commands | Gateway status, system resources, plugin count, model cooldowns, recent errors |
+| `/services` | phase1-commands | Profile listing, gateway state per profile, port bindings |
+| `/logs` | phase1-commands | Unified log viewer with service and line-count args |
+| `/plugins` | phase1-commands | Enhanced plugin dashboard with versions and workspace info |
+| `/cron` | legacy-commands | Shows crontab + systemd timers + scripts + latest reports |
+| `/privacy-scan` | legacy-commands | Report-only, filenames only for secret matches |
+| `/limits` | legacy-commands | Shows cooldown windows + auth expiry ETAs |
+| `/release` | legacy-commands | Prints QA gate checklist |
+| `/handoff` | legacy-commands | Shows recent handoff log tail |
+| `/staging-smoke` | legacy-commands | Sequential staging installs for all openclaw-* repos |
+| `/sessions` | observer-commands | List recent AI agent sessions with activity summary |
+| `/activity` | observer-commands | Recent agent activity (all or by session) |
+| `/session-tail` | observer-commands | Tail the most recent agent events |
+| `/session-stats` | observer-commands | Aggregate statistics for observed sessions |
+| `/session-clear` | observer-commands | Clear observer event log (requires auth) |
+| `/skills` | skills-commands | Show all locally installed plugins with their commands |
+| `/shortcuts` | skills-commands | Flat cheat-sheet of all commands across all plugins |
 
 <!-- /SECTION: commands -->
 
@@ -52,13 +90,13 @@ Defined 2026-02-27. Five GitHub issues created:
 
 | Issue | Title | Priority | Status |
 |-------|-------|----------|--------|
-| [#1](https://github.com/homeofe/openclaw-ops/issues/1) | Extract shared utilities into a common module | High | Open |
+| [#1](https://github.com/homeofe/openclaw-ops/issues/1) | Extract shared utilities into a common module | High | Done |
 | [#2](https://github.com/homeofe/openclaw-ops/issues/2) | Add test infrastructure and basic command tests | High | Open |
 | [#3](https://github.com/homeofe/openclaw-ops/issues/3) | Implement Phase 2 /config command | Medium | Open |
 | [#4](https://github.com/homeofe/openclaw-ops/issues/4) | Fix Windows disk usage detection in /health | Medium | Open |
 | [#5](https://github.com/homeofe/openclaw-ops/issues/5) | Fix triage CI workflow cross-repo 403 errors | Low | Open |
 
-Recommended order: #1 (refactor) -> #2 (tests) -> #4 (bug fix) -> #3 (new feature) -> #5 (CI fix, requires PAT setup)
+Recommended next: #2 (tests) -> #4 (bug fix) -> #3 (new feature) -> #5 (CI fix, requires PAT setup)
 
 <!-- /SECTION: roadmap -->
 
@@ -69,8 +107,7 @@ Recommended order: #1 (refactor) -> #2 (tests) -> #4 (bug fix) -> #3 (new featur
 
 | Gap | Severity | Description | Tracked |
 |-----|----------|-------------|---------|
-| Duplicated utility code | HIGH | expandHome, safeExec, runCmd copied between index.ts and phase1-commands.ts | [#1](https://github.com/homeofe/openclaw-ops/issues/1) |
-| No tests | HIGH | Zero test coverage, no test framework configured | [#2](https://github.com/homeofe/openclaw-ops/issues/2) |
+| Command handler tests | HIGH | Utility tests exist (37), but no handler integration tests with mocked exec | [#2](https://github.com/homeofe/openclaw-ops/issues/2) |
 | Windows disk detection | MEDIUM | Uses deprecated wmic, hardcodes C: drive | [#4](https://github.com/homeofe/openclaw-ops/issues/4) |
 | /config command | MEDIUM | Phase 2 - config viewer/validator not yet implemented | [#3](https://github.com/homeofe/openclaw-ops/issues/3) |
 | Triage CI | LOW | Suspended - 403 cross-repo failures, needs PAT | [#5](https://github.com/homeofe/openclaw-ops/issues/5) |

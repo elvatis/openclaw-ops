@@ -7,7 +7,7 @@
 
 import fs from "node:fs";
 import path from "node:path";
-import { expandHome, safeExec, runCmd } from "../src/utils.js";
+import { readJsonSafe } from "../src/utils.js";
 
 interface PluginCommand {
   name: string;
@@ -109,17 +109,13 @@ function scanInstalledPlugins(workspace: string): PluginInfo[] {
 
       seen.add(entry.name);
 
-      let manifest: any = {};
-      try { manifest = JSON.parse(fs.readFileSync(manifestPath, "utf-8")); } catch {}
+      const manifest = readJsonSafe<Record<string, any>>(manifestPath, {});
 
       // Read version from package.json if not in manifest
-      let version = manifest.version ?? "";
+      let version: string = manifest.version ?? "";
       if (!version) {
-        const pkgPath = path.join(pluginPath, "package.json");
-        try {
-          const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf-8"));
-          version = pkg.version ?? "?";
-        } catch { version = "?"; }
+        const pkg = readJsonSafe<{ version?: string } | null>(path.join(pluginPath, "package.json"), null);
+        version = pkg?.version ?? "?";
       }
 
       const commands = extractCommandsFromSource(pluginPath);

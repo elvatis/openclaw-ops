@@ -6,6 +6,36 @@
 
 ---
 
+## 2026-02-27 T-004: Extract shared utilities into a common module
+
+**Agent:** claude-opus-4.6
+**Phase:** implementation
+**Commit:** pending
+
+### What was done
+
+- Added three new shared helpers to `src/utils.ts`:
+  - `formatIsoCompact(input)` - compact UTC timestamp formatting, replacing inline `.toISOString().slice(0,16).replace("T"," ")` patterns
+  - `readJsonSafe<T>(filePath, fallback)` - safe JSON file reading with typed fallback, replacing duplicated try/catch JSON.parse patterns
+  - `listWorkspacePluginDirs(workspace)` - workspace plugin directory scanning, replacing duplicated readdirSync+filter patterns
+- Extracted all legacy commands from `index.ts` into `extensions/legacy-commands.ts` (/cron, /privacy-scan, /release, /staging-smoke, /handoff, /limits)
+- Slimmed `index.ts` to a thin entry point that delegates to four extension modules
+- Replaced direct `execSync` call in /privacy-scan with `runCmd("bash", [script])` for consistency
+- Updated `formatCooldownLine` to use `formatIsoCompact` internally
+- Updated `phase1-commands.ts` to use `readJsonSafe` and `listWorkspacePluginDirs` (removed 2 duplicated patterns)
+- Updated `skills-commands.ts` to use `readJsonSafe` (removed 2 duplicated patterns)
+- Added 10 new tests covering the three new utilities (37 total, was 27)
+- TypeScript type-check clean, all 37 tests passing
+
+### Key decisions
+
+- Kept `fmtTs` as local helper in observer-commands.ts since it uses local time + shorter MM-DD format (intentionally different from UTC formatIsoCompact)
+- Used explicit generic type parameters for `readJsonSafe` at call sites to satisfy strict TypeScript
+- Chose `extensions/legacy-commands.ts` naming to distinguish from the newer Phase 1/2 command modules
+- Did not extract the staging-smoke timestamp stamp format (`.replace(/[:T]/g, "")`) since it is a one-off file-naming pattern, not a display format
+
+---
+
 ## 2026-02-27 T-001: Improve /limits command output
 
 **Agent:** claude-opus-4.6

@@ -5,38 +5,16 @@
 
 ---
 
-## T-004: Extract shared utilities into a common module
-
-**GitHub Issue:** [#1](https://github.com/homeofe/openclaw-ops/issues/1)
-**Priority:** HIGH
-
-**Goal:** Eliminate duplicated utility functions between index.ts and extensions/phase1-commands.ts.
-
-**What to do:**
-1. Create `lib/utils.ts` exporting: `expandHome`, `safeExec`, `runCmd`, `latestFile`, `formatBytes`, `checkGatewayStatus`
-2. Refactor `index.ts` to import from `lib/utils.ts`
-3. Refactor `extensions/phase1-commands.ts` to import from `lib/utils.ts`
-4. Unify the `runCmd` default timeout (currently 120s in index.ts vs 30s in phase1-commands.ts)
-5. Update `tsconfig.json` include paths if needed
-6. Verify all commands still work
-
-**Definition of done:**
-- [ ] No duplicated utility functions between files
-- [ ] All existing commands still work after refactor
-- [ ] New extensions can import shared utilities from one location
-
----
-
 ## T-005: Add test infrastructure and basic command tests
 
 **GitHub Issue:** [#2](https://github.com/homeofe/openclaw-ops/issues/2)
 **Priority:** HIGH
-**Depends on:** T-004 (easier to test shared utilities once extracted)
+**Depends on:** T-004 (done - shared utilities extracted to src/utils.ts)
 
 **What to do:**
-1. Add vitest as a dev dependency
-2. Add `"test": "vitest run"` to package.json scripts
-3. Write unit tests for pure utility functions (expandHome, formatBytes, latestFile)
+1. ~~Add vitest as a dev dependency~~ (done)
+2. ~~Add `"test": "vitest run"` to package.json scripts~~ (done)
+3. ~~Write unit tests for pure utility functions~~ (37 tests exist in src/utils.test.ts)
 4. Write integration tests for command handlers with mocked exec/spawn
 5. Verify `npm test` passes
 
@@ -64,7 +42,7 @@
 
 **GitHub Issue:** [#3](https://github.com/homeofe/openclaw-ops/issues/3)
 **Priority:** MEDIUM
-**Depends on:** T-004 (should use shared utilities)
+**Depends on:** T-004 (done - import from src/utils.ts)
 
 **What to do:**
 1. Create new command handler in `extensions/phase2-commands.ts`
@@ -94,6 +72,7 @@
 
 | Item | Resolution |
 |------|-----------|
+| T-004: Extract shared utilities | Done 2026-02-27. src/utils.ts + legacy-commands.ts extraction |
 | Phase 1 commands (/health, /services, /logs, /plugins) | Implemented 2026-02-27, commit 72c5109 |
 | v0.2 roadmap definition | Defined 2026-02-27, 5 GitHub issues created |
 | /cron + /privacy-scan | Created 2026-02-24 |
@@ -110,8 +89,13 @@
 
 | What | Where |
 |------|-------|
-| Main entry point | `index.ts` |
+| Main entry point | `index.ts` (thin, delegates to extensions) |
+| Shared utilities | `src/utils.ts` |
+| Shared utility tests | `src/utils.test.ts` |
+| Legacy commands | `extensions/legacy-commands.ts` |
 | Phase 1 extensions | `extensions/phase1-commands.ts` |
+| Observer commands | `extensions/observer-commands.ts` |
+| Skills commands | `extensions/skills-commands.ts` |
 | Plugin manifest | `openclaw.plugin.json` |
 | Cron scripts | `cron/scripts/*.sh` |
 | Cron reports | `cron/reports/*` |
