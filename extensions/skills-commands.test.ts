@@ -11,7 +11,7 @@ import os from "node:os";
 import { createMockApi, invokeCommand, type MockApi } from "../src/test-helpers.js";
 import { registerSkillsCommands } from "./skills-commands.js";
 
-const tmpWorkspace = path.join(os.tmpdir(), "openclaw-ops-test-skills-" + process.pid);
+const tmpWorkspace = path.join(os.tmpdir(), "openclaw-ops-elvatis-test-skills-" + process.pid);
 
 describe("skills-commands registration", () => {
   let api: MockApi;

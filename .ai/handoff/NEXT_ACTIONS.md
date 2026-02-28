@@ -1,4 +1,4 @@
-﻿# openclaw-ops: Next Actions for Incoming Agent
+﻿# openclaw-ops-elvatis: Next Actions for Incoming Agent
 
 > Priority order. Work top-down.
 > Updated: 2026-02-27 (v0.2 roadmap definition)
@@ -7,7 +7,7 @@
 
 ## T-005: Add test infrastructure and basic command tests
 
-**GitHub Issue:** [#2](https://github.com/elvatis/openclaw-ops/issues/2)
+**GitHub Issue:** [#2](https://github.com/elvatis/openclaw-ops-elvatis/issues/2)
 **Priority:** HIGH
 **Depends on:** T-004 (done - shared utilities extracted to src/utils.ts)
 
@@ -27,7 +27,7 @@
 
 ## T-007: Fix Windows disk usage detection in /health
 
-**GitHub Issue:** [#4](https://github.com/elvatis/openclaw-ops/issues/4)
+**GitHub Issue:** [#4](https://github.com/elvatis/openclaw-ops-elvatis/issues/4)
 **Priority:** MEDIUM
 
 **What to do:**
@@ -40,7 +40,7 @@
 
 ## T-006: Implement /config command
 
-**GitHub Issue:** [#3](https://github.com/elvatis/openclaw-ops/issues/3)
+**GitHub Issue:** [#3](https://github.com/elvatis/openclaw-ops-elvatis/issues/3)
 **Priority:** MEDIUM
 **Depends on:** T-004 (done - import from src/utils.ts)
 
@@ -56,7 +56,7 @@
 
 ## T-003: Fix triage CI cross-repo permissions
 
-**GitHub Issue:** [#5](https://github.com/elvatis/openclaw-ops/issues/5)
+**GitHub Issue:** [#5](https://github.com/elvatis/openclaw-ops-elvatis/issues/5)
 **Priority:** LOW
 **Blocked by:** Requires PAT with repo scope set as TRIAGE_GH_TOKEN secret
 

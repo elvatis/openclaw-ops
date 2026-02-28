@@ -11,7 +11,7 @@ import os from "node:os";
 import { createMockApi, invokeCommand, type MockApi } from "../src/test-helpers.js";
 import { registerObserverCommands } from "./observer-commands.js";
 
-const tmpWorkspace = path.join(os.tmpdir(), "openclaw-ops-test-observer-" + process.pid);
+const tmpWorkspace = path.join(os.tmpdir(), "openclaw-ops-elvatis-test-observer-" + process.pid);
 
 describe("observer-commands registration", () => {
   let api: MockApi;

@@ -1,4 +1,4 @@
-﻿# openclaw-ops
+﻿# openclaw-ops-elvatis
 
 Local ops plugin.
 
@@ -20,7 +20,7 @@ Local ops plugin.
 - `/limits` - show provider auth expiry + observed cooldown windows
 - `/release` - show staging gateway + human GO checklist (QA gate)
 - `/staging-smoke` - install all `openclaw-*` plugins into the staging profile, restart gateway, and verify status (writes report)
-- `/handoff` - show latest openclaw-ops handoff log tail
+- `/handoff` - show latest openclaw-ops-elvatis handoff log tail
 
 ## Usage Examples
 
@@ -36,7 +36,7 @@ Shows gateway status, system resources (CPU, memory, disk), plugin count, and re
 openclaw logs
 
 # View last 100 lines of specific plugin
-openclaw logs openclaw-ops 100
+openclaw logs openclaw-ops-elvatis 100
 
 # View audit logs
 openclaw logs audit 200
@@ -73,7 +73,7 @@ Applies labels based on keyword analysis:
 
 #### Cross-repo PAT setup (required for multi-repo triage)
 
-The default `GITHUB_TOKEN` is scoped to `openclaw-ops` only. To label issues in sibling repos (`openclaw-memory-core`, `openclaw-gpu-bridge`, etc.), you must configure a fine-grained Personal Access Token:
+The default `GITHUB_TOKEN` is scoped to `openclaw-ops-elvatis` only. To label issues in sibling repos (`openclaw-memory-core`, `openclaw-gpu-bridge`, etc.), you must configure a fine-grained Personal Access Token:
 
 1. Go to [GitHub token settings](https://github.com/settings/tokens?type=beta)
 2. Create a fine-grained PAT with:
@@ -87,6 +87,6 @@ Without `TRIAGE_GH_TOKEN`, the workflow gracefully skips repos where it lacks pe
 ## Install
 
 ```bash
-openclaw plugins install -l ~/.openclaw/workspace/openclaw-ops
+openclaw plugins install -l ~/.openclaw/workspace/openclaw-ops-elvatis
 openclaw gateway restart
 ```

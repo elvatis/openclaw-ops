@@ -12,7 +12,7 @@ import os from "node:os";
 import { createMockApi, invokeCommand, type MockApi } from "../src/test-helpers.js";
 import { registerLegacyCommands } from "./legacy-commands.js";
 
-const tmpWorkspace = path.join(os.tmpdir(), "openclaw-ops-test-legacy-" + process.pid);
+const tmpWorkspace = path.join(os.tmpdir(), "openclaw-ops-elvatis-test-legacy-" + process.pid);
 const cronDir = path.join(tmpWorkspace, "cron");
 const cronScripts = path.join(cronDir, "scripts");
 const cronReports = path.join(cronDir, "reports");
@@ -171,7 +171,7 @@ describe("/release handler with filesystem", () => {
   let api: MockApi;
 
   beforeEach(() => {
-    const opsDir = path.join(tmpWorkspace, "openclaw-ops");
+    const opsDir = path.join(tmpWorkspace, "openclaw-ops-elvatis");
     fs.mkdirSync(opsDir, { recursive: true });
     fs.writeFileSync(path.join(opsDir, "RELEASE.md"), "# Release checklist\n- Step 1\n- Step 2", "utf-8");
     api = createMockApi();
@@ -207,7 +207,7 @@ describe("/handoff handler with filesystem", () => {
   let api: MockApi;
 
   beforeEach(() => {
-    const handoffDir = path.join(tmpWorkspace, "openclaw-ops", ".ai", "handoff");
+    const handoffDir = path.join(tmpWorkspace, "openclaw-ops-elvatis", ".ai", "handoff");
     fs.mkdirSync(handoffDir, { recursive: true });
     fs.writeFileSync(path.join(handoffDir, "LOG.md"), "## 2026-02-27\nSession completed.\n", "utf-8");
     api = createMockApi();

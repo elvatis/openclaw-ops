@@ -2,7 +2,7 @@
 
 ## Overview
 
-This guide explains how to integrate the Phase 1 operational commands into the main openclaw-ops plugin.
+This guide explains how to integrate the Phase 1 operational commands into the main openclaw-ops-elvatis plugin.
 
 ## New Commands
 
@@ -57,7 +57,7 @@ Add configuration to enable/disable new commands:
 
 ```json
 {
-  "id": "openclaw-ops",
+  "id": "openclaw-ops-elvatis",
   "name": "OpenClaw Ops",
   "version": "0.2.0",
   "description": "Operational commands: dashboards, monitoring, and management.",
@@ -99,7 +99,7 @@ if (features.operationalDashboard) {
 ### 1. Test Installation
 
 ```bash
-cd ~/.openclaw/workspace/openclaw-ops
+cd ~/.openclaw/workspace/openclaw-ops-elvatis
 openclaw plugins install -l .
 openclaw gateway restart
 openclaw status
@@ -118,7 +118,7 @@ openclaw services
 openclaw logs
 
 # View specific plugin logs
-openclaw logs openclaw-ops 100
+openclaw logs openclaw-ops-elvatis 100
 
 # Plugin dashboard
 openclaw plugins
@@ -138,7 +138,7 @@ Each command should:
 
 ```bash
 # Verify plugin is installed
-openclaw plugins list | grep openclaw-ops
+openclaw plugins list | grep openclaw-ops-elvatis
 
 # Check gateway logs
 openclaw logs gateway 100
@@ -212,7 +212,7 @@ Full config with all options:
 
 ```json
 {
-  "openclaw-ops": {
+  "openclaw-ops-elvatis": {
     "enabled": true,
     "workspacePath": "~/.openclaw/workspace",
     "features": {

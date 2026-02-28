@@ -135,7 +135,7 @@ describe("latestFile", () => {
 // loadActiveCooldowns
 // ---------------------------------------------------------------------------
 describe("loadActiveCooldowns", () => {
-  const tmpDir = path.join(os.tmpdir(), "openclaw-ops-test-cooldowns-" + process.pid);
+  const tmpDir = path.join(os.tmpdir(), "openclaw-ops-elvatis-test-cooldowns-" + process.pid);
   const memoryDir = path.join(tmpDir, "memory");
   const statePath = path.join(memoryDir, "model-ratelimits.json");
 
@@ -279,7 +279,7 @@ describe("formatIsoCompact", () => {
 // readJsonSafe
 // ---------------------------------------------------------------------------
 describe("readJsonSafe", () => {
-  const tmpDir = path.join(os.tmpdir(), "openclaw-ops-test-json-" + process.pid);
+  const tmpDir = path.join(os.tmpdir(), "openclaw-ops-elvatis-test-json-" + process.pid);
 
   afterEach(() => {
     try {
@@ -314,7 +314,7 @@ describe("readJsonSafe", () => {
 // listWorkspacePluginDirs
 // ---------------------------------------------------------------------------
 describe("listWorkspacePluginDirs", () => {
-  const tmpDir = path.join(os.tmpdir(), "openclaw-ops-test-plugins-" + process.pid);
+  const tmpDir = path.join(os.tmpdir(), "openclaw-ops-elvatis-test-plugins-" + process.pid);
 
   afterEach(() => {
     try {

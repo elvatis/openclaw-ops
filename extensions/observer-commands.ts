@@ -1,5 +1,5 @@
 /**
- * openclaw-ops: Session Observer (Phase 2)
+ * openclaw-ops-elvatis: Session Observer (Phase 2)
  *
  * Observes AI agent conversations across all sessions:
  * - Hooks into message_received to build a live event log

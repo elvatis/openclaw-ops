@@ -1,5 +1,5 @@
 /**
- * openclaw-ops Config Commands
+ * openclaw-ops-elvatis Config Commands
  *
  * /config [plugin] - Configuration viewer/validator
  *   - Show current config (all or by plugin)

@@ -12,7 +12,7 @@ import os from "node:os";
 import { createMockApi, invokeCommand, type MockApi } from "../src/test-helpers.js";
 import { registerConfigCommands } from "./config-commands.js";
 
-const tmpWorkspace = path.join(os.tmpdir(), "openclaw-ops-test-config-" + process.pid);
+const tmpWorkspace = path.join(os.tmpdir(), "openclaw-ops-elvatis-test-config-" + process.pid);
 
 function cleanup() {
   try {

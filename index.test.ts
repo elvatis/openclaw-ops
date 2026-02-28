@@ -1,5 +1,5 @@
 /**
- * Tests for the main openclaw-ops entry point (index.ts).
+ * Tests for the main openclaw-ops-elvatis entry point (index.ts).
  *
  * Verifies that register() wires up all extension modules and respects
  * the enabled/workspacePath config options.

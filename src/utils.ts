@@ -1,5 +1,5 @@
 /**
- * Shared utility functions for openclaw-ops.
+ * Shared utility functions for openclaw-ops-elvatis.
  *
  * Single source of truth for all cross-cutting helpers used by index.ts
  * and extension modules. Grouped by domain:

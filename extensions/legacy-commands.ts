@@ -1,5 +1,5 @@
 /**
- * openclaw-ops Legacy Commands
+ * openclaw-ops-elvatis Legacy Commands
  *
  * Commands originally defined inline in index.ts, extracted here to keep
  * the entry point thin and all command logic in extensions/.
@@ -132,7 +132,7 @@ export function registerLegacyCommands(
     requireAuth: false,
     acceptsArgs: false,
     handler: async () => {
-      const p = path.join(workspace, "openclaw-ops", "RELEASE.md");
+      const p = path.join(workspace, "openclaw-ops-elvatis", "RELEASE.md");
       const lines: string[] = [];
       lines.push("Release / QA");
       lines.push("");
@@ -235,16 +235,16 @@ export function registerLegacyCommands(
 
   api.registerCommand({
     name: "handoff",
-    description: "Show latest handoff log entries for openclaw-ops",
+    description: "Show latest handoff log entries for openclaw-ops-elvatis",
     requireAuth: false,
     acceptsArgs: false,
     handler: async () => {
-      const p = path.join(workspace, "openclaw-ops", ".ai", "handoff", "LOG.md");
+      const p = path.join(workspace, "openclaw-ops-elvatis", ".ai", "handoff", "LOG.md");
       if (!fs.existsSync(p)) return { text: `Missing: ${p}` };
       const txt = fs.readFileSync(p, "utf-8");
       const tail = txt.split("\n").slice(-40).join("\n").trim();
       const lines: string[] = [];
-      lines.push("openclaw-ops handoff (tail)");
+      lines.push("openclaw-ops-elvatis handoff (tail)");
       lines.push("");
       lines.push("```text");
       lines.push(tail || "(empty)");

@@ -1,5 +1,5 @@
 /**
- * openclaw-ops Skills & Shortcuts Commands
+ * openclaw-ops-elvatis Skills & Shortcuts Commands
  *
  * /skills    — all locally installed plugins with their commands
  * /shortcuts — flat cheat-sheet of every command, grouped by plugin
@@ -133,10 +133,10 @@ function scanInstalledPlugins(workspace: string): PluginInfo[] {
     }
   }
 
-  // Sort: openclaw-ops first, then alphabetical
+  // Sort: openclaw-ops-elvatis first, then alphabetical
   plugins.sort((a, b) => {
-    if (a.dirName === "openclaw-ops") return -1;
-    if (b.dirName === "openclaw-ops") return 1;
+    if (a.dirName === "openclaw-ops-elvatis") return -1;
+    if (b.dirName === "openclaw-ops-elvatis") return 1;
     return a.dirName.localeCompare(b.dirName);
   });
 

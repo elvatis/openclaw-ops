@@ -1,4 +1,4 @@
-# openclaw-ops: Agent Conventions
+# openclaw-ops-elvatis: Agent Conventions
 
 > Every agent working on this project must read and follow these conventions.
 

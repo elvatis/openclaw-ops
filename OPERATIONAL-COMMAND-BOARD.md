@@ -2,7 +2,7 @@
 
 ## Current State
 
-**openclaw-ops** currently provides:
+**openclaw-ops-elvatis** currently provides:
 - `/cron` - Cron dashboard (jobs, scripts, reports)
 - `/privacy-scan` - GitHub privacy scanning
 - `/limits` - Provider auth expiry + cooldown windows
@@ -308,7 +308,7 @@
 
 ```json
 {
-  "openclaw-ops": {
+  "openclaw-ops-elvatis": {
     "enabled": true,
     "workspacePath": "~/.openclaw/workspace",
     "monitoring": {

@@ -1,5 +1,5 @@
 /**
- * openclaw-ops Phase 1 Extensions
+ * openclaw-ops-elvatis Phase 1 Extensions
  * Operational Command Board - High Priority Commands
  *
  * Commands: /health, /services, /logs, /plugins

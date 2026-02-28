@@ -13,7 +13,7 @@ import { createMockApi, invokeCommand, type MockApi } from "../src/test-helpers.
 import { registerPhase1Commands } from "./phase1-commands.js";
 
 // Use a temp workspace that exists on disk (for commands that check filesystem)
-const tmpWorkspace = path.join(os.tmpdir(), "openclaw-ops-test-phase1-" + process.pid);
+const tmpWorkspace = path.join(os.tmpdir(), "openclaw-ops-elvatis-test-phase1-" + process.pid);
 
 describe("phase1-commands registration", () => {
   let api: MockApi;

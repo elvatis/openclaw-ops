@@ -1,4 +1,4 @@
-﻿# openclaw-ops: Agent Journal
+﻿# openclaw-ops-elvatis: Agent Journal
 
 > **Append-only.** Never delete or edit past entries.
 > Every agent session adds a new entry at the top.
@@ -74,11 +74,11 @@
 - Analyzed full codebase (index.ts, extensions/phase1-commands.ts, all handoff files) to identify gaps and improvements
 - Created GitHub labels: high-priority, medium-priority, low-priority
 - Created 5 GitHub issues defining the v0.2 roadmap:
-  - [#1](https://github.com/elvatis/openclaw-ops/issues/1) - Extract shared utilities into a common module (HIGH)
-  - [#2](https://github.com/elvatis/openclaw-ops/issues/2) - Add test infrastructure and basic command tests (HIGH)
-  - [#3](https://github.com/elvatis/openclaw-ops/issues/3) - Implement Phase 2 /config command (MEDIUM)
-  - [#4](https://github.com/elvatis/openclaw-ops/issues/4) - Fix Windows disk usage detection in /health (MEDIUM)
-  - [#5](https://github.com/elvatis/openclaw-ops/issues/5) - Fix triage CI workflow cross-repo 403 errors (LOW)
+  - [#1](https://github.com/elvatis/openclaw-ops-elvatis/issues/1) - Extract shared utilities into a common module (HIGH)
+  - [#2](https://github.com/elvatis/openclaw-ops-elvatis/issues/2) - Add test infrastructure and basic command tests (HIGH)
+  - [#3](https://github.com/elvatis/openclaw-ops-elvatis/issues/3) - Implement Phase 2 /config command (MEDIUM)
+  - [#4](https://github.com/elvatis/openclaw-ops-elvatis/issues/4) - Fix Windows disk usage detection in /health (MEDIUM)
+  - [#5](https://github.com/elvatis/openclaw-ops-elvatis/issues/5) - Fix triage CI workflow cross-repo 403 errors (LOW)
 - Updated DASHBOARD.md with v0.2 roadmap issue table and T-004 through T-007 task IDs
 - Updated STATUS.md with roadmap section and current state
 - Updated NEXT_ACTIONS.md with prioritized work items linked to GitHub issues
@@ -109,19 +109,19 @@
 
 ## Previous sessions (pre-AAHP-v3)
 
-- 2026-02-24: Created openclaw-ops with /cron + /privacy-scan.
+- 2026-02-24: Created openclaw-ops-elvatis with /cron + /privacy-scan.
 - 2026-02-24: Added /limits (auth expiry + cooldown windows).
 - 2026-02-25: Adjusted `assets/logo-256.png` to keep the logo centered within GitHub avatar safe area.
 - 2026-02-25: Disabled 40 risky GitHub automation cron jobs (`ghwatch-*` and `ghtriage-*`) that could auto-spawn fix agents / open PRs.
 - 2026-02-25: Added GitHub Actions workflow `openclaw-triage-labels` (labeling-only) + `scripts/triage_labels.py` to triage and label issues across all `elvatis/openclaw-*` repos (skip archived/forks). Commit: 0275eb0.
 - 2026-02-25: Updated `openclaw-triage-labels` to use `secrets.GITHUB_TOKEN` by default (with `issues: write`), optional override via `TRIAGE_GH_TOKEN`. Documented in README.
 - 2026-02-25: Added QA documentation + commands: `RELEASE.md` (staging gateway + GO checklist), `/release` (prints QA gate), `/handoff` (shows recent handoff log tail). Updated README command list.
-- 2026-02-25: Updated Elvatis blog post “How I Run an Autonomous AI Assistant Without Losing Control” live via Ghost Admin API: added `openclaw-ops` to plugin stack, tightened wording around self-healing scope, updated rollout discipline section to include staging + human GO, and extended the conclusion with QA gate step.
+- 2026-02-25: Updated Elvatis blog post “How I Run an Autonomous AI Assistant Without Losing Control” live via Ghost Admin API: added `openclaw-ops-elvatis` to plugin stack, tightened wording around self-healing scope, updated rollout discipline section to include staging + human GO, and extended the conclusion with QA gate step.
 - 2026-02-25: Overnight QA run (local, no install): ran `npm run build --if-present` + `npm test --if-present` across 14 `openclaw-*` repos. All passed except `openclaw-memory-core` test failure in `tests/store.test.ts` (expects 'Dubai' in top search hit).
 - 2026-02-25: Created/initialized OpenClaw **staging** profile locally on the same machine (state dir `~/.openclaw-staging/`). Updated `RELEASE.md` to document staging gateway + GO flow.
 - 2026-02-25: Policy update: staging smoke tests must be run for **all** `openclaw-*` repos before rollout/publish; documented in `RELEASE.md`.
 - 2026-02-25: Publish gate decision: ClawHub publish uses Option 2 (CI green + staging smoke green). User requested guarantees; we can provide best-effort safety gates and rollback, not absolute guarantees.
-- 2026-02-25: Implemented `/staging-smoke` in openclaw-ops to run sequential staging installs for all `openclaw-*` repos (with `openclaw.plugin.json`), restart staging gateway, run `openclaw --profile staging status`, and write report to `cron/reports/staging-smoke_*.txt`. Updated README.
+- 2026-02-25: Implemented `/staging-smoke` in openclaw-ops-elvatis to run sequential staging installs for all `openclaw-*` repos (with `openclaw.plugin.json`), restart staging gateway, run `openclaw --profile staging status`, and write report to `cron/reports/staging-smoke_*.txt`. Updated README.
 - 2026-02-25: Ran staging smoke via CLI loop (single-host constraint, avoid repeated restarts). Failed immediately on `openclaw-docker`: `openclaw plugins install` reports `package.json missing openclaw.extensions`. Report: `cron/reports/staging-smoke_202602242352.txt`.
 - 2026-02-25: Patched all affected `openclaw-*` repos to add `package.json` → `openclaw.extensions` so `openclaw plugins install` works. Updated + pushed:
   - openclaw-docker (7571eb9)

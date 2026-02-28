@@ -1,4 +1,4 @@
-# openclaw-ops: Trust Register
+# openclaw-ops-elvatis: Trust Register
 
 > Tracks verification status of critical system properties.
 

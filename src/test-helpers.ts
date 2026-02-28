@@ -1,5 +1,5 @@
 /**
- * Shared test helpers for openclaw-ops command tests.
+ * Shared test helpers for openclaw-ops-elvatis command tests.
  *
  * Provides a mock API object that captures registerCommand() calls,
  * allowing tests to verify command registration and invoke handlers.
