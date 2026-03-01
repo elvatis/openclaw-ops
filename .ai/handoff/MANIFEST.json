@@ -86,7 +86,8 @@
       "depends_on": [],
       "blocked_by": "403 cross-repo permission error - needs PAT with repo scope",
       "created": "2026-02-26T23:16:45Z",
-      "github_issue": "https://github.com/elvatis/openclaw-ops-elvatis/issues/5"
+      "github_repo": "elvatis/openclaw-ops-elvatis",
+      "github_issue": 6
     },
     "T-004": {
       "title": "Extract shared utilities into a common module",
